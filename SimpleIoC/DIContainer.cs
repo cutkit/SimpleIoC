@@ -40,7 +40,7 @@ namespace SimpleIoC
             else
             {
                 //lay cac tham so cua constructor
-                var constructorParameters = firstConstructor.GetParameters(); //IDatabase, ILogger
+                var constructorParameters = firstConstructor.GetParameters(); //IDatabase, ILogger..
                 var moduleDependecies = new List<object>();
                 foreach (var parameter in constructorParameters)
                 {
@@ -53,7 +53,7 @@ namespace SimpleIoC
             //Luu tru module va interface tuong ung
             RegisteredModules.Add(interfaceType, module);
         }
-        private static object GetModule(Type interfaceType)
+        private static object GetModule(Type interfaceType)// giup khoi tao cac doi tuong 
         {
             if (RegisteredModules.ContainsKey(interfaceType))
             {
@@ -61,5 +61,15 @@ namespace SimpleIoC
             }
             throw new Exception("Module not register");
         }
-    }
+        //      [moi SetModule deu duoc luu trong Dictionary(RegisteredModules)]
+        //   DIContainer.SetModule<IDatabase, Database>();
+        //      => vi class Database khong co tham so => di vao ham if => new Database => trong dic(RegisteredModules) 
+        //              se chua interface va instance Database
+        //
+        //   DIContainer.SetModule<Cart, Cart>();
+        //        => vi class Cart implement chinh no, bo qua ham kiem tra, chay vao else, goi lai ham GetModule
+        //               de instance cac parameter trong dic(RegisteredModules)
+        //
+    }   //   var myCart = DIContainer.GetModule<Cart>();
+        //        => Lay tu dic(RegisteredModules) => return lai instance implement interface
 }

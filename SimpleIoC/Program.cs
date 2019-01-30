@@ -16,6 +16,8 @@ namespace SimpleIoC
             DIContainer.SetModule<ILogger, Logger>();
             DIContainer.SetModule<IEmailSender, EmailSender>();
             DIContainer.SetModule<Cart, Cart>();
+
+
             var myCart = DIContainer.GetModule<Cart>();
 
             Console.ReadKey();
