@@ -10,7 +10,7 @@ namespace SimpleIoC
     {
         //Dictionary de chua cac interface va module tuong ung
         private static readonly Dictionary<Type, object>
-            RegisteredModeles = new Dictionary<Type, object>();
+            RegisteredModules = new Dictionary<Type, object>();
         //2 ham co ban, chuyen <T> thanh dang Type trong c# de de viet code
         public static void SetModule<TInterface, TModule>()
         {
@@ -40,7 +40,26 @@ namespace SimpleIoC
             else
             {
                 //lay cac tham so cua constructor
+                var constructorParameters = firstConstructor.GetParameters(); //IDatabase, ILogger
+                var moduleDependecies = new List<object>();
+                foreach (var parameter in constructorParameters)
+                {
+                    var dependency = GetModule(parameter.ParameterType);//lay module tuong ung tu IDContainer
+                    moduleDependecies.Add(dependency);
+                }
+                //Inject cac dependency vao constructor cua module
+                module = firstConstructor.Invoke(moduleDependecies.ToArray());
             }
+            //Luu tru module va interface tuong ung
+            RegisteredModules.Add(interfaceType, module);
+        }
+        private static object GetModule(Type interfaceType)
+        {
+            if (RegisteredModules.ContainsKey(interfaceType))
+            {
+                return RegisteredModules[interfaceType];
+            }
+            throw new Exception("Module not register");
         }
     }
 }
